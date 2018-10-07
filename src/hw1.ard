@@ -1,0 +1,27 @@
+\import Data.Unit
+\import Equiv
+\import HLevel
+\import Paths
+
+\func unitIsProp : isProp Unit
+    => \lam x y => \case x \with {| unit => \case y \with {| unit => idp}}
+
+\func isContr (A : \Type) => \Sigma (a0 : A) (\Pi (a : A) -> a = a0)
+
+\func toUnit {A : \Type} (f : A -> Unit) (a : A) : f a = unit
+    => unitIsProp (f a) unit
+
+\func isContr=>A~1 {A : \Type} (proof : isContr(A)) : (QEquiv {A} {Unit}) \cowith
+    | f _ => unit
+    | ret _ => proof.1
+    | ret_f x => inv (proof.2 x)
+    | f_sec y => unitIsProp y unit
+
+\func A~1=>isProp {A : \Type} (e : QEquiv {A} {Unit}) : \Sigma (isProp A) A
+    => (\lam x y =>
+        inv (inv (pmap e.ret (toUnit e.f x)) *> e.ret_f x)
+            *>
+        (inv (pmap e.ret (toUnit e.f y)) *> e.ret_f y), e.ret unit)
+
+\func isProp=>isContr {A : \Type} (proof : \Sigma (isProp A) A) : isContr(A)
+    => (proof.2 , \lam a => proof.1 a proof.2)
