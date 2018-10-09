@@ -25,17 +25,3 @@
 
 \func isProp=>isContr {A : \Type} (proof : \Sigma (isProp A) A) : isContr(A)
     => (proof.2 , \lam a => proof.1 a proof.2)
-
-
-
-\func task3a {A B : \Type} (f : A -> B) (a a' : A) (p : a = a') : f a' = f a'
-    => transport (\lam x => f x = f x) p (idp {B} {f a})
-{- тип выражения f a' = f a', значит можно упростить до idp {B} {f a'} -}
-
-\func task3b {A : \Type} (a a' : A) (p : a = a') : a' = a'
-    => transport (\lam x => x = a') p p
-{- тип выражения a' = a', значит можно упростить до idp {A} {a'} -}
-
-\func task3c {A : \Type} (a a' : A) (p : a = a') : a = a'
-    => transport (\lam x => a = x) p (idp {A} {a})
-{- тип выражения a = a', значит можно упростить до p -}
